@@ -1,0 +1,355 @@
+<!-- CardPro Sheet Tab -->
+<div class="container">
+
+  <!-- Stats, Filter & Search -->
+  <form [formGroup]="filterForm">
+    <!-- [src]="client.attachmentPath" -->
+    <!-- <div class="flex items-center justify-between pt-3 pb-3 mb-4 border-b border-t border-gray-100"></div> -->
+    <div class="flex items-center justify-between mb-4 bg-gray-50 p-3">
+      <div class="flex gap-10">
+        <div class="flex flex-col items-center">
+          <div class="text-sm font-semibold">{{ cardProStats.totalEmails }}</div>
+          <div class="text-gray-500 text-xs">Emails Processed</div>
+        </div>
+        <div class="flex flex-col items-center" (click)="openModal('isNotInTrackingSheetModalOpen')">
+          <div class="text-sm font-semibold">{{ cardProStats.notInTrackingSheet }}</div>
+          <div class="text-gray-500 text-xs">Not in T.S</div>
+        </div>
+        <div class="flex flex-col items-center">
+          <div class="text-sm font-semibold">{{ cardProStats.totalEmailsWithMultipleImages }}</div>
+          <div class="text-gray-500 text-xs">Multiple Images</div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+
+        <!-- Search -->
+        <div class="relative w-48">
+          <svg class="absolute left-2 top-2 h-4 w-4 text-gray-400" fill="none" stroke="currentColor"
+            viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="search" placeholder="Search..." formControlName="search"
+            class="pl-8 h-8 text-sm w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300" />
+        </div>
+
+        <!-- Filter -->
+        <div class="relative w-48">
+          <!-- Actual select -->
+          <select formControlName="filter"
+            class="pl-8 pr-6 h-8 text-sm border rounded-md bg-white hover:bg-gray-50 appearance-none w-full">
+            <option value="all">All Images</option>
+            <option value="multiple_images">Multiple Images</option>
+            <option value="not_in_tracking_sheet">Not in T.S</option>
+          </select>
+
+          <!-- Left Icon (absolute inside) -->
+          <div class="absolute inset-y-0 left-2 flex items-center pointer-events-none">
+            <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <line x1="4" y1="21" x2="4" y2="14"></line>
+              <line x1="4" y1="10" x2="4" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12" y2="3"></line>
+              <line x1="20" y1="21" x2="20" y2="16"></line>
+              <line x1="20" y1="12" x2="20" y2="3"></line>
+              <line x1="1" y1="14" x2="7" y2="14"></line>
+              <line x1="9" y1="8" x2="15" y2="8"></line>
+              <line x1="17" y1="16" x2="23" y2="16"></line>
+            </svg>
+          </div>
+
+          <!-- Right Arrow -->
+          <div class="absolute inset-y-0 right-2 flex items-center pointer-events-none">
+            <svg class="h-3 w-3 text-gray-400 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </form>
+
+  <div class="row" *ngIf="isDataAvailable">
+
+    <!-- Files grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div *ngFor="let image of images" class="border border-gray-200 rounded-lg overflow-hidden relative">
+        <!-- [src]="image.attachmentPath" -->
+        <img src="assets/images/avatar.jpg" [alt]="image.attachmentFileName" width="400" height="300"
+          class="h-48 w-full object-cover rounded-t-lg" />
+    
+        <!-- Multi badge -->
+        <span *ngIf="hasMultipleImages(image.cardProClientId)"
+          class="absolute top-2 right-2 text-xs px-2 py-1 bg-violet-300 border border-violet-700 text-violet-800 rounded-full">
+          Multi
+        </span>
+    
+        <!-- Deleted badge -->
+        <span *ngIf="image.deleted"
+          class="absolute top-2 right-2 text-xs px-2 py-1 bg-rose-200 border border-rose-700 text-rose-700 rounded-full">
+          Deleted
+        </span>
+    
+        <div class="p-3">
+          <h3 class="font-medium text-base text-gray-900">{{ image.attachmentFileName }}</h3>
+          <p class="text-gray-600 text-xs">
+            {{ image.email }}
+          </p>
+    
+          <div class="flex gap-2 mt-3 mb-3">
+            <button
+              class="flex items-center justify-center gap-1 border border-gray-200 rounded-md py-1.5 px-3 flex-1 text-sm"
+              (click)="openModal('isViewImageModalOpen')" (click)="onImageSelected(image)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="h-3.5 w-3.5">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              View Image
+            </button>
+            <button
+              class="flex items-center justify-center gap-1 border border-gray-200 rounded-md py-1.5 px-3 flex-1 text-sm"
+              *ngIf="image.deleted" (click)="onImageSelected(image)" (click)="openModal('isUndoImageDeleteModalOpen')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="h-3.5 w-3.5">
+                <path d="M3 6h18"></path>
+                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+              </svg>
+              Undo Delete
+            </button>
+            <button
+              class="flex items-center justify-center gap-1 border border-gray-200 rounded-md py-1.5 px-3 flex-1 text-sm"
+              *ngIf="showImageDeleteButton(image)" (click)="onImageSelected(image)"
+              (click)="openModal('isDeleteImageModalOpen')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="h-3.5 w-3.5">
+                <path d="M3 6h18"></path>
+                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+              </svg>
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" class="mt-5 mr-5 p-4" *ngIf="!isFetchingData">
+      <ul class="flex justify-end items-center space-x-2">
+        <!-- First page button -->
+        <li (click)="onGetStartPage()" [class.opacity-50]="!isStartEnabled"
+          [class.cursor-not-allowed]="!isStartEnabled">
+          <button
+            class="w-9 h-9 flex items-center justify-center rounded-md bg-white border border-gray-300 hover:bg-gray-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 20l-7-8 7-8M12 20l-7-8 7-8" />
+            </svg>
+          </button>
+        </li>
+
+        <!-- Previous page button -->
+        <li (click)="onGetPreviousPage()" [class.opacity-50]="!isPrevEnabled"
+          [class.cursor-not-allowed]="!isPrevEnabled">
+          <button
+            class="w-9 h-9 flex items-center justify-center rounded-md bg-white border border-gray-300 hover:bg-gray-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+        </li>
+
+        <!-- Page numbers -->
+        <li *ngFor="let page of pages" (click)="onGetPage(page - 1)">
+          <button [ngClass]="{
+                    'bg-blue-500 text-white': page === currentPage,
+                    'bg-white text-gray-700 hover:bg-gray-100': page !== currentPage
+                  }"
+            class="w-9 h-9 flex items-center justify-center rounded-md border border-gray-300 transition-all duration-150">
+            {{ page }}
+          </button>
+        </li>
+
+        <!-- Next page button -->
+        <li (click)="onGetNextPage()" [class.opacity-50]="!isNextEnabled" [class.cursor-not-allowed]="!isNextEnabled">
+          <button
+            class="w-9 h-9 flex items-center justify-center rounded-md bg-white border border-gray-300 hover:bg-gray-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </li>
+
+        <!-- Last page button -->
+        <li (click)="onGetEndPage()" [class.opacity-50]="!isEndEnabled" [class.cursor-not-allowed]="!isEndEnabled">
+          <button
+            class="w-9 h-9 flex items-center justify-center rounded-md bg-white border border-gray-300 hover:bg-gray-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4l7 8-7 8M12 4l7 8-7 8" />
+            </svg>
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+  </div>
+
+  <!-- Empty Data UI -->
+  <div *ngIf="!isDataAvailable" class="flex flex-col items-center justify-center mt-10 text-center">
+    <img src="assets/images/empty.png" alt="No Data Available" class="w-48 h-48 object-contain mb-4" />
+    <p class="text-gray-500 text-sm">No data available yet</p>
+  </div>
+
+  <!-- Modal View Image-->
+  <div *ngIf="isViewImageModalOpen"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-3xl">
+
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between p-4 border-b">
+        <h5 class="text-xl font-semibold" id="imageCropperModalLabel">{{ activeImageOnDialog.attachmentFileName }}</h5>
+        <button type="button" class="text-gray-500 hover:text-gray-700" (click)="closeModal('isViewImageModalOpen')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body with Image Cropper -->
+      <div class="p-4 flex justify-center">
+        <img [src]="activeImageOnDialog.attachmentPath" class="max-w-full max-h-96 object-contain" />
+      </div>
+
+      <!-- Modal Footer (optional buttons) -->
+
+      <div class="flex justify-end p-4 border-t">
+        <button type="button" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-500"
+          (click)="closeModal('isViewImageModalOpen')">
+          Close
+        </button>
+        <!-- <button type="button" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500" (click)="onCrop()">
+        Done
+      </button> -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal Delete Image -->
+  <div *ngIf="isDeleteImageModalOpen"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-sm">
+
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between p-4 border-b">
+        <h5 class="text-lg font-semibold" id="imageCropperModalLabel">{{ activeImageOnDialog.attachmentFileName }}</h5>
+        <button type="button" class="text-gray-500 hover:text-gray-700" (click)="closeModal('isDeleteImageModalOpen')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body with Confirmation Message -->
+      <div class="p-4 text-center">
+        <p class="text-lg font-medium text-gray-700">Confirm, delete image?</p>
+      </div>
+
+      <!-- Modal Footer with Action Buttons -->
+      <div class="flex justify-end p-4 border-t space-x-3">
+        <button type="button" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-500"
+          (click)="closeModal('isDeleteImageModalOpen')">
+          Cancel
+        </button>
+        <button type="button" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-500" (click)="onDelete()">
+          Yes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Undo Image Delete -->
+  <div *ngIf="isUndoImageDeleteModalOpen"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-sm">
+
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between p-4 border-b">
+        <h5 class="text-xl font-semibold" id="imageCropperModalLabel">{{ activeImageOnDialog.attachmentFileName }}</h5>
+        <button type="button" class="text-gray-500 hover:text-gray-700"
+          (click)="closeModal('isUndoImageDeleteModalOpen')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body with Confirmation Message -->
+      <div class="p-4 text-center">
+        <p class="text-lg font-medium text-gray-700">Restore deleted image?</p>
+      </div>
+
+      <!-- Modal Footer with Action Buttons -->
+      <div class="flex justify-end p-4 border-t space-x-3">
+        <button type="button" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-500"
+          (click)="closeModal('isUndoImageDeleteModalOpen')">
+          Cancel
+        </button>
+        <button type="button" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500"
+          (click)="onUndoDelete()">
+          Yes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Emails Not in Tracking Sheet -->
+  <div *ngIf="isNotInTrackingSheetModalOpen"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-md">
+
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between p-4 border-b">
+        <h5 class="text-lg font-semibold">Emails Not in Tracking Sheet</h5>
+        <button type="button" class="text-gray-500 hover:text-gray-700"
+          (click)="closeModal('isNotInTrackingSheetModalOpen')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"
+            class="text-gray-600">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body with Emails List -->
+      <div class="p-4">
+        <div *ngFor="let email of cardProStats.notInTrackingSheetEmailList" class="flex items-center space-x-2 mb-3">
+          <i class="lucide lucide-mail text-gray-600"></i> <!-- Lucide icon for email -->
+          <span class="text-sm text-gray-700">{{ email }}</span>
+        </div>
+      </div>
+
+      <!-- Modal Footer with Action Button -->
+      <div class="flex justify-end p-4 border-t">
+        <button type="button" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500"
+          (click)="onUndoDelete()">
+          Yes
+        </button>
+      </div>
+    </div>
+  </div>

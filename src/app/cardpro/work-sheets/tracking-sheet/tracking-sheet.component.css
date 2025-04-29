@@ -1,0 +1,6 @@
+.empty-data-image {
+    width: 400px; /* Adjust as needed */
+    height: auto;
+    max-width: 100%; /* Ensures responsiveness */
+    opacity: 0.8;
+  }
