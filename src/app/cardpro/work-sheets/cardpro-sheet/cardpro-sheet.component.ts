@@ -1,4 +1,13 @@
-import { Component } from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  Signal,
+  effect,
+} from '@angular/core';
 import { CardProSheetService } from './cardpro.service';
 import { PaginationService } from '../../../util/pagination.service';
 import { CardPro as CardProSheetClient } from './cardpro.model';
@@ -6,7 +15,12 @@ import { APIResponse } from '../../../util/api-response.model';
 import { PaginationAPIResponseModel } from '../../../util/pagination-response.model';
 import { CommonModule } from '@angular/common';
 import { CardProStats } from './cardpro-stats.model';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
@@ -17,7 +31,9 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
   styleUrl: './cardpro.component.css',
 })
 export class CardproSheetComponent {
-  
+  @Input() shouldRefresh!: Signal<boolean>;
+  @Output() acknowledge = new EventEmitter<void>();
+
   apiResponse: APIResponse;
 
   cardProSheetClients: CardProSheetClient[];
@@ -90,7 +106,24 @@ export class CardproSheetComponent {
     private cardProSheetService: CardProSheetService,
     private paginationService: PaginationService,
     private formBuilder: FormBuilder
-  ) {}
+  ) {
+    effect(() => {
+      if (this.shouldRefresh()) {
+        
+        this.search = '';
+        this.filter = 'all';
+
+        console.log(
+          'CardproSheetComponent: reacting to update from ImagesComponent'
+        );
+        console.log('Current page:', this.apiResponse.data.currentPage);
+
+        this.onGetPage(this.apiResponse.data.currentPage);
+
+        this.acknowledge.emit();
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.cardProSheetService.response.subscribe((response) => {
@@ -142,60 +175,57 @@ export class CardproSheetComponent {
     });
 
     this.filterForm.valueChanges
-    .pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-    )
-    .subscribe(values => {
-      const { search, filter } = values;
-      this.search = search;
-      this.filter = filter;
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((values) => {
+        const { search, filter } = values;
+        this.search = search;
+        this.filter = filter;
 
-      this.onGetPage(0);
-    });
-
+        this.onGetPage(0);
+      });
   }
 
-  setActiveStats(stat: string){
-    switch(stat){
+  setActiveStats(stat: string) {
+    switch (stat) {
       case 'notInTrackingSheet':
-        this.activeStatsList = this.cardProSheetStats.notInTrackingSheetEmailList
-        break
+        this.activeStatsList =
+          this.cardProSheetStats.notInTrackingSheetEmailList;
+        break;
       case 'multipleImages':
-        this.activeStatsList = this.cardProSheetStats.totalEmailWithMultipleImagesList
-        break
-      case 'hasDifferentEmail':  
-        this.activeStatsList = this.cardProSheetStats.hasDifferentEmailList
-        break
+        this.activeStatsList =
+          this.cardProSheetStats.totalEmailWithMultipleImagesList;
+        break;
+      case 'hasDifferentEmail':
+        this.activeStatsList = this.cardProSheetStats.hasDifferentEmailList;
+        break;
       default:
-        this.activeStatsList = []
+        this.activeStatsList = [];
     }
 
-    this.openModal('isStatsModalOpen')
-
+    this.openModal('isStatsModalOpen');
   }
 
   openModal(id: string) {
-    switch(id){
+    switch (id) {
       case 'isMoreDetailsModalOpen':
-        this.isMoreDetailsModalOpen = true
+        this.isMoreDetailsModalOpen = true;
         break;
       case 'isStatsModalOpen':
-        this.isStatsModalOpen = true
+        this.isStatsModalOpen = true;
         break;
     }
-  }  
+  }
 
   closeModal(id: string) {
-    switch(id){
+    switch (id) {
       case 'isMoreDetailsModalOpen':
-        this.isMoreDetailsModalOpen = false
+        this.isMoreDetailsModalOpen = false;
         break;
       case 'isStatsModalOpen':
-        this.isStatsModalOpen = false
+        this.isStatsModalOpen = false;
         break;
     }
-  }  
+  }
 
   showTag(client: CardProSheetClient) {
     if (client.notInTrackingSheet) return 'status-not-in-tracking-sheet';

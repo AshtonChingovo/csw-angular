@@ -97,8 +97,11 @@
     </thead>
     <tbody>
       <!-- bg-gray-50 -->
-      <tr class="bg-white hover:bg-gray-50" *ngFor="let item of trackingSheetClients">
-        <td class="px-4 py-2 text-sm text-gray-600">1</td>
+      <tr class="hover:bg-gray-50" *ngFor="let item of trackingSheetClients; let i = index" [ngClass]="{
+        'bg-white': i % 2 === 0,
+        'bg-gray-100': i % 2 != 0
+      }">
+        <td class="px-4 py-2 text-sm text-gray-600">{{ i + 2 }}</td>
         <td class="px-4 py-2 text-sm text-gray-600">{{ item.name }} {{ item.surname }}</td>
         <td class="px-4 py-2 text-sm text-gray-600">{{ item.email }}</td>
         <td class="px-4 py-2 text-sm text-gray-600">{{ item.registrationNumber }}</td>

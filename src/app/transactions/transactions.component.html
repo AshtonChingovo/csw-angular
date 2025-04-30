@@ -101,8 +101,11 @@
         </thead>
         <tbody>
             <!-- bg-gray-50 -->
-            <tr class="bg-white hover:bg-gray-50" *ngFor="let transaction of transactions">
-                <td class="px-4 py-2 text-sm text-gray-600">1</td>
+            <tr class="bg-white hover:bg-gray-50" *ngFor="let transaction of transactions; let i = index" [ngClass]="{
+                'bg-white': i % 2 === 0,
+                'bg-gray-100': i % 2 != 0
+              }">
+                <td class="px-4 py-2 text-sm text-gray-600">{{ i + 1 }}</td>
                 <td class="px-4 py-2 text-sm text-gray-600">{{ transaction.id }}</td>
                 <td class="px-4 py-2 text-sm text-gray-600">{{ transaction.date.split(', ')[0] }}</td>
                 <td class="px-4 py-2 text-sm text-gray-600">{{ transaction.date.split(', ')[1] }}</td>

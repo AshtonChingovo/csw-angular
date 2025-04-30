@@ -71,8 +71,6 @@ export class ImagesService {
   }
 
   getImagesStats() {
-    console.log('CardPro Stats called');
-  
     this.httpClient
     .get(
       environment.baseUrl +

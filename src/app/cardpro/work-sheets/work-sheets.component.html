@@ -1,21 +1,17 @@
-  <!-- Tabs Options-->
-  <div class="inline-flex bg-gray-100 rounded-lg mb-5 p-1">
-    <button 
-      *ngFor="let tab of tabs" 
-      class="px-4 py-1.5 rounded-md transition-colors text-sm"
-      [class.bg-white]="activeTab === tab"
-      [class.font-medium]="activeTab === tab"
-      [class.text-gray-900]="activeTab === tab"
-      [class.shadow-sm]="activeTab === tab"
-      [class.text-gray-600]="activeTab !== tab"
-      [class.hover:bg-gray-200]="activeTab !== tab"
-      (click)="setActiveTab(tab)"
-    >
-      {{ tab }}
-    </button>
-  </div>
+<!-- Tabs Options-->
+<div class="inline-flex bg-gray-100 rounded-lg mb-5 p-1">
+  <button *ngFor="let tab of tabs" class="px-4 py-1.5 rounded-md transition-colors text-sm"
+    [class.bg-white]="activeTab() === tab" [class.font-medium]="activeTab() === tab"
+    [class.text-gray-900]="activeTab() === tab" [class.shadow-sm]="activeTab() === tab"
+    [class.text-gray-600]="activeTab() !== tab" [class.hover:bg-gray-200]="activeTab() !== tab"
+    (click)="setActiveTab(tab)">
+    {{ tab }}
+  </button>
+</div>
 
-  <!-- Tabs Content -->
-  <app-cardpro-sheet [ngClass]="{ 'hidden': activeTab != 'CardPro Clients' }"></app-cardpro-sheet>
-  <app-images [ngClass]="{ 'hidden': activeTab != 'Images' }"></app-images>
-  <app-tracking-sheet [ngClass]="{ 'hidden': activeTab != 'Tracking Sheet' }"></app-tracking-sheet>
+<!-- Tabs Content -->
+<app-cardpro-sheet [shouldRefresh]="notifyCardProSheetComponent"
+  (acknowledge)="acknowledgeUpdateFromCardproSheetComponent()"
+  [ngClass]="{ 'hidden': activeTab() != 'CardPro Clients' }"></app-cardpro-sheet>
+<app-images (dataUpdated)="onDataUpdatedByImagesComponent()" [ngClass]="{ 'hidden': activeTab() != 'Images' }"></app-images>
+<app-tracking-sheet [ngClass]="{ 'hidden': activeTab() != 'Tracking Sheet' }"></app-tracking-sheet>

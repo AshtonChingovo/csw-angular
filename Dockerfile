@@ -12,10 +12,10 @@ COPY . .
 
 RUN npm run build --configuration=production
 
-# FROM nginx:latest
+FROM nginx:latest
 
-# COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
-# COPY --from=build /app/dist/csw-angular/browser /usr/share/nginx/html
+COPY --from=build /app/dist/csw-angular/browser /usr/share/nginx/html
 
 EXPOSE 80

@@ -76,8 +76,8 @@
     <!-- Files grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <div *ngFor="let image of images" class="border border-gray-200 rounded-lg overflow-hidden relative">
-        <!-- [src]="image.attachmentPath" -->
-        <img src="assets/images/avatar.jpg" [alt]="image.attachmentFileName" width="400" height="300"
+        <!-- src="assets/images/avatar.jpg" -->
+        <img [src]="image.attachmentPath" [alt]="image.attachmentFileName" width="400" height="300"
           class="h-48 w-full object-cover rounded-t-lg" />
     
         <!-- Multi badge -->
@@ -113,13 +113,13 @@
             <button
               class="flex items-center justify-center gap-1 border border-gray-200 rounded-md py-1.5 px-3 flex-1 text-sm"
               *ngIf="image.deleted" (click)="onImageSelected(image)" (click)="openModal('isUndoImageDeleteModalOpen')">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+              <!-- <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 class="h-3.5 w-3.5">
                 <path d="M3 6h18"></path>
                 <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
                 <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-              </svg>
+              </svg> -->
               Undo Delete
             </button>
             <button

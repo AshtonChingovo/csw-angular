@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { PaginationAPIResponseModel } from '../../../util/pagination-response.model';
 import { CommonModule } from '@angular/common';
 import { APIResponse } from '../../../util/api-response.model';
@@ -27,6 +27,9 @@ export type CropperDialogResult = {
   styleUrl: './images.component.css',
 })
 export class ImagesComponent implements OnInit {
+  
+  @Output() dataUpdated = new EventEmitter<void>();
+
   apiResponse: APIResponse;
 
   cardProSheetClients: CardProSheetClient[];
@@ -139,6 +142,10 @@ export class ImagesComponent implements OnInit {
 
     this.imagesService.deletionResponse.subscribe((response) => {
       if (response.isSuccessful && response.data != null) {
+
+        // notify WorkSheetsComponent that data has been updated
+        this.dataUpdated.emit();
+
         var responseImage = response.data;
 
         this.images.find((image) => image.id == responseImage.id).deleted =
@@ -149,7 +156,6 @@ export class ImagesComponent implements OnInit {
     this.imagesService.cardProStatsResponse.subscribe((response) => {
       if (response.isSuccessful && response.data != null) {
         this.cardProStats = response.data.data;
-        console.log('CardPro Stats:', this.cardProStats);
       }
     });
 
@@ -164,8 +170,6 @@ export class ImagesComponent implements OnInit {
         const { search, filter } = values;
         this.search = search;
         this.filter = filter;
-
-        console.log('Searching ', search);
 
         this.onGetPage(0);
       });

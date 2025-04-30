@@ -80,7 +80,8 @@
         <div *ngFor="let client of cardProSheetClients" class="relative border border-gray-200 rounded-lg overflow-hidden">
   
           <!-- #Image section with "READY" badge -->
-          <img src="assets/images/avatar.jpg" width="400" height="300" class="h-48 w-full object-cover rounded-t-lg" />
+          <!-- src="assets/images/avatar.jpg" -->
+          <img [src]="client.images[0].attachmentPath" width="400" height="300" class="h-48 w-full object-cover rounded-t-lg" />
         
           <!-- Badge at the top-right corner -->
           <!-- <span class="absolute top-2 right-2 text-xs px-2 py-1 bg-emerald-300 border border-emerald-700 text-emerald-700 rounded-full">
