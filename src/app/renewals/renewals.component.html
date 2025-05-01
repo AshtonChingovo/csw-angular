@@ -1,0 +1,236 @@
+<div *ngIf="isDataAvailable">
+
+    <!-- Stats, Search & Filter UI -->
+    <!-- <div class="flex items-center justify-between pt-3 pb-3 mb-4 border-b border-t border-gray-100"></div> -->
+    <form [formGroup]="filterForm">
+        <div class="flex items-center justify-between mb-4 bg-gray-50 p-3">
+            <div class="flex gap-10">
+                <div class="flex flex-col items-center">
+                    <div class="text-sm font-semibold">128</div>
+                    <div class="text-gray-500 text-xs">Total Clients</div>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="text-sm font-semibold">43</div>
+                    <div class="text-gray-500 text-xs">Total Renewed</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <div class="relative w-48">
+                    <svg class="absolute left-2 top-2 h-4 w-4 text-gray-400" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="search" placeholder="Search..." formControlName="search"
+                        class="pl-8 h-8 text-sm w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300" />
+                </div>
+
+                <!-- Filter -->
+                <div class="relative w-48">
+                    <!-- Actual select -->
+                    <select formControlName="filter"
+                        class="pl-8 pr-6 h-8 text-sm border rounded-md bg-white hover:bg-gray-50 appearance-none w-full">
+                        <option value="all">All</option>
+                        <option value="active_membership">Active Members</option>
+                        <option value="renewal_due">Due Renewal</option>
+                    </select>
+
+                    <!-- Left Icon (absolute inside) -->
+                    <div class="absolute inset-y-0 left-2 flex items-center pointer-events-none">
+                        <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <line x1="4" y1="21" x2="4" y2="14"></line>
+                            <line x1="4" y1="10" x2="4" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12" y2="3"></line>
+                            <line x1="20" y1="21" x2="20" y2="16"></line>
+                            <line x1="20" y1="12" x2="20" y2="3"></line>
+                            <line x1="1" y1="14" x2="7" y2="14"></line>
+                            <line x1="9" y1="8" x2="15" y2="8"></line>
+                            <line x1="17" y1="16" x2="23" y2="16"></line>
+                        </svg>
+                    </div>
+
+                    <!-- Right Arrow -->
+                    <div class="absolute inset-y-0 right-2 flex items-center pointer-events-none">
+                        <svg class="h-3 w-3 text-gray-400 opacity-50" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+    <!-- Tracking Sheet table -->
+    <table class="min-w-full table-auto border-collapse">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                    #
+                </th>
+                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                    Name
+                </th>
+                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                    Email
+                </th>
+                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                    Reg #
+                </th>
+                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                    Reg Year
+                </th>
+                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                    Membership
+                </th>
+                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- bg-gray-50 -->
+            <tr class="hover:bg-gray-50" *ngFor="let item of trackingSheetClients; let i = index" [ngClass]="{
+          'bg-white': i % 2 === 0,
+          'bg-gray-100': i % 2 != 0
+        }">
+                <td class="px-4 py-2 text-sm text-gray-600">{{ i + 2 }}</td>
+                <td class="px-4 py-2 text-sm text-gray-600">{{ item.name }} {{ item.surname }}</td>
+                <td class="px-4 py-2 text-sm text-gray-600">{{ item.email }}</td>
+                <td class="px-4 py-2 text-sm text-gray-600">{{ item.registrationNumber }}</td>
+                <td class="px-4 py-2 text-sm text-gray-600">{{ item.registrationYear }}</td>
+                <td class="px-4 py-2 text-sm text-gray-600">
+                    <span
+                        class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-green-600/20 ring-inset"
+                        *ngIf="item.membershipStatus === ACTIVE_MEMBERSHIP">Active</span>
+                    <!-- <span class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10 ring-inset">Badge</span> -->
+                    <span
+                        class="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-yellow-600/20 ring-inset"
+                        *ngIf="item.membershipStatus === RENEWAL_DUE">Due Renewal</span>
+                </td>
+                <td class="px-4 py-4 text-sm text-gray-600">
+                    <button *ngIf="item.membershipStatus === RENEWAL_DUE"
+                        class="flex items-center px-3 py-1 bg-green-500 text-white rounded-full shadow-sm hover:bg-green-600 transition text-xs">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-refresh-ccw mr-1.5">
+                            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                            <path d="M3 3v5h5" />
+                            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                            <path d="M16 16h5v5" />
+                        </svg>
+                        Renew
+                    </button>
+                    <span
+                    class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-green-600/20 ring-inset"
+                    *ngIf="item.membershipStatus === ACTIVE_MEMBERSHIP">RENEWED</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" class="mt-5 mr-5 p-4" *ngIf="!isFetchingData">
+        <ul class="flex justify-end items-center space-x-2">
+            <!-- First page button -->
+            <li (click)="onGetStartPage()" [class.opacity-50]="!isStartEnabled"
+                [class.cursor-not-allowed]="!isStartEnabled">
+                <button
+                    class="w-9 h-9 flex items-center justify-center rounded-md bg-white border border-gray-300 hover:bg-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 20l-7-8 7-8M12 20l-7-8 7-8" />
+                    </svg>
+                </button>
+            </li>
+
+            <!-- Previous page button -->
+            <li (click)="onGetPreviousPage()" [class.opacity-50]="!isPrevEnabled"
+                [class.cursor-not-allowed]="!isPrevEnabled">
+                <button
+                    class="w-9 h-9 flex items-center justify-center rounded-md bg-white border border-gray-300 hover:bg-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+            </li>
+
+            <!-- Page numbers -->
+            <li *ngFor="let page of pages" (click)="onGetPage(page - 1)">
+                <button [ngClass]="{
+              'bg-black text-white': page === currentPage,
+              'bg-white text-gray-700 hover:bg-gray-100': page !== currentPage
+            }" class="w-9 h-9 flex items-center justify-center rounded-md border border-gray-300 transition-all duration-150">
+                    {{ page }}
+                </button>
+            </li>
+
+            <!-- Next page button -->
+            <li (click)="onGetNextPage()" [class.opacity-50]="!isNextEnabled"
+                [class.cursor-not-allowed]="!isNextEnabled">
+                <button
+                    class="w-9 h-9 flex items-center justify-center rounded-md bg-white border border-gray-300 hover:bg-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </li>
+
+            <!-- Last page button -->
+            <li (click)="onGetEndPage()" [class.opacity-50]="!isEndEnabled" [class.cursor-not-allowed]="!isEndEnabled">
+                <button
+                    class="w-9 h-9 flex items-center justify-center rounded-md bg-white border border-gray-300 hover:bg-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5 4l7 8-7 8M12 4l7 8-7 8" />
+                    </svg>
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+</div>
+
+<body class="bg-white min-h-screen flex justify-center pt-36 pr-6" *ngIf="!isDataAvailable">
+    <div class="w-full max-w-md">
+        <div class="px-6 py-6 text-center space-y-4">
+
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+                <ng-container *ngIf="!isProcessingTrackingSheet; else processingTrackingSheet">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-dock-icon lucide-dock">
+                        <path d="M2 8h20" />
+                        <rect width="20" height="16" x="2" y="4" rx="2" />
+                        <path d="M6 16h12" />
+                    </svg>
+                </ng-container>
+
+                <ng-template #processingTrackingSheet>
+                    <span
+                        class="inline-block w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></span>
+                </ng-template>
+            </div>
+
+            <div class="space-y-2">
+                <p class="font-medium">Process your Tracking Sheet</p>
+                <p class="text-sm text-gray-500">
+                    Click the button below to start processing client's membership data.
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-white px-6 py-4 text-center">
+            <button class="bg-black hover:bg-gray-800 text-white px-6 py-2 rounded" (click)="processTrackingSheet()">
+                Process Tracking Sheet
+            </button>
+        </div>
+    </div>
+</body>

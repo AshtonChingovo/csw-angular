@@ -76,28 +76,28 @@
     <!-- Files grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <div *ngFor="let image of images" class="border border-gray-200 rounded-lg overflow-hidden relative">
-        <!-- src="assets/images/avatar.jpg" -->
-        <img [src]="image.attachmentPath" [alt]="image.attachmentFileName" width="400" height="300"
+        <!-- src="assets/images/avatar.jpg"-->
+        <img [src]="image.url" [alt]="image.attachmentFileName" width="400" height="300"
           class="h-48 w-full object-cover rounded-t-lg" />
-    
+
         <!-- Multi badge -->
         <span *ngIf="hasMultipleImages(image.cardProClientId)"
           class="absolute top-2 right-2 text-xs px-2 py-1 bg-violet-300 border border-violet-700 text-violet-800 rounded-full">
           Multi
         </span>
-    
+
         <!-- Deleted badge -->
         <span *ngIf="image.deleted"
           class="absolute top-2 right-2 text-xs px-2 py-1 bg-rose-200 border border-rose-700 text-rose-700 rounded-full">
           Deleted
         </span>
-    
+
         <div class="p-3">
           <h3 class="font-medium text-base text-gray-900">{{ image.attachmentFileName }}</h3>
           <p class="text-gray-600 text-xs">
             {{ image.email }}
           </p>
-    
+
           <div class="flex gap-2 mt-3 mb-3">
             <button
               class="flex items-center justify-center gap-1 border border-gray-200 rounded-md py-1.5 px-3 flex-1 text-sm"
@@ -139,7 +139,7 @@
         </div>
       </div>
     </div>
-    
+
 
     <!-- Pagination -->
     <nav aria-label="Page navigation" class="mt-5 mr-5 p-4" *ngIf="!isFetchingData">
@@ -172,7 +172,7 @@
         <!-- Page numbers -->
         <li *ngFor="let page of pages" (click)="onGetPage(page - 1)">
           <button [ngClass]="{
-                    'bg-blue-500 text-white': page === currentPage,
+                    'bg-black-500 text-white': page === currentPage,
                     'bg-white text-gray-700 hover:bg-gray-100': page !== currentPage
                   }"
             class="w-9 h-9 flex items-center justify-center rounded-md border border-gray-300 transition-all duration-150">
@@ -230,7 +230,7 @@
 
       <!-- Modal Body with Image Cropper -->
       <div class="p-4 flex justify-center">
-        <img [src]="activeImageOnDialog.attachmentPath" class="max-w-full max-h-96 object-contain" />
+        <img [src]="activeImageOnDialog.url" class="max-w-full max-h-96 object-contain" />
       </div>
 
       <!-- Modal Footer (optional buttons) -->
@@ -321,7 +321,7 @@
   <!-- Modal for Emails Not in Tracking Sheet -->
   <div *ngIf="isNotInTrackingSheetModalOpen"
     class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-md">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-hidden">
 
       <!-- Modal Header -->
       <div class="flex items-center justify-between p-4 border-b">
@@ -337,19 +337,20 @@
       </div>
 
       <!-- Modal Body with Emails List -->
-      <div class="p-4">
-        <div *ngFor="let email of cardProStats.notInTrackingSheetEmailList" class="flex items-center space-x-2 mb-3">
-          <i class="lucide lucide-mail text-gray-600"></i> <!-- Lucide icon for email -->
-          <span class="text-sm text-gray-700">{{ email }}</span>
+      <div class="p-4 overflow-y-auto max-h-60">
+        <div *ngFor="let email of cardProStats.notInTrackingSheetEmailList; let i = index" class="flex items-center space-x-2 mb-3">
+          <i class="lucide lucide-mail text-gray-600"></i>
+          <span class="text-sm text-gray-700">{{ i + 1 }}. {{ email }}</span>
         </div>
       </div>
 
-      <!-- Modal Footer with Action Button -->
+      <!-- Modal Footer -->
       <div class="flex justify-end p-4 border-t">
         <button type="button" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500"
-          (click)="onUndoDelete()">
-          Yes
+          (click)="closeModal('isNotInTrackingSheetModalOpen')">
+          Done
         </button>
       </div>
+
     </div>
   </div>

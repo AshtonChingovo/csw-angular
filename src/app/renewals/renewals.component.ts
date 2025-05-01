@@ -1,28 +1,34 @@
-import { Component, OnInit } from '@angular/core';
-import { TrackingSheetService } from './tracking-sheet.service';
-import { TrackingSheetClient } from './model/tracking-sheet.model';
+import { Component } from '@angular/core';
+import { APIResponse } from '../util/api-response.model';
+import { TrackingSheetClient } from '../cardpro/work-sheets/tracking-sheet/model/tracking-sheet.model';
+import { PaginationAPIResponseModel } from '../util/pagination-response.model';
+import { TrackingSheetService } from '../cardpro/work-sheets/tracking-sheet/tracking-sheet.service';
+import { PaginationService } from '../util/pagination.service';
 import { CommonModule } from '@angular/common';
-import { PaginationService } from '../../../util/pagination.service';
-import { PaginationAPIResponseModel } from '../../../util/pagination-response.model';
-import { APIResponse } from '../../../util/api-response.model';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { on } from 'events';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { TrackingSheetStats } from './model/tracking-sheet-stats.model';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 
 @Component({
-  selector: 'app-tracking-sheet',
+  selector: 'app-renewals',
   standalone: true,
   imports: [FormsModule, CommonModule, ReactiveFormsModule],
-  templateUrl: './tracking-sheet.component.html',
-  styleUrl: './tracking-sheet.component.css',
+  templateUrl: './renewals.component.html',
+  styleUrl: './renewals.component.css',
 })
-export class TrackingSheetComponent implements OnInit {
+export class RenewalsComponent {
   apiResponse: APIResponse;
 
   trackingSheetClients: TrackingSheetClient[];
   paginationResponseModel: PaginationAPIResponseModel;
 
-  trackingSheetStats: TrackingSheetStats;
+  ACTIVE_MEMBERSHIP = "active";
+  RENEWAL_DUE = "renewal_due";
 
   // search and filter form group
   filterForm: FormGroup;
@@ -40,7 +46,7 @@ export class TrackingSheetComponent implements OnInit {
   isEndEnabled: boolean;
 
   isDataAvailable: boolean = false;
-  isStatsDataAvailable: boolean = false;
+  isProcessingTrackingSheet: boolean = false;
   isFetchingData: boolean;
 
   constructor(
@@ -51,16 +57,17 @@ export class TrackingSheetComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.onGetPage(0);
+    this.trackingSheetService.trackingSheetStatsResponse.subscribe(
+      (response) => {
+        this.isFetchingData = false;
+      }
+    );
 
     this.trackingSheetService.response.subscribe((response) => {
-
-      console.log("TrackingSheetComponent <-> Active")
-
       this.isFetchingData = false;
+      this.isProcessingTrackingSheet = false;
 
       if (response.isSuccessful && response.data != null) {
-
         this.trackingSheetClients = response.data.data;
 
         if (this.trackingSheetClients.length > 0) {
@@ -87,25 +94,16 @@ export class TrackingSheetComponent implements OnInit {
         this.isNextEnabled = paginationParams.isNextEnabled;
         this.isEndEnabled = paginationParams.isEndEnabled;
 
-        // fetch stats
-        if(this.trackingSheetStats == null){
-          this.trackingSheetService.getTrackingSheetStats();
-        }
-
       }
     });
 
-    this.trackingSheetService.trackingSheetStatsResponse.subscribe((response) => {
+    this.trackingSheetService.renewalTrackingSheetResponse.subscribe((response) => {
       this.isFetchingData = false;
 
-      if (response.isSuccessful && response.data != null) {
+      if (response.isSuccessful) {
+        this.isProcessingTrackingSheet = false;
 
-        this.trackingSheetStats = response.data.data;
-
-        if (this.trackingSheetStats != null) {
-          this.isStatsDataAvailable = true;
-        }
-
+        this.onGetPage(0);
       }
     });
 
@@ -123,6 +121,12 @@ export class TrackingSheetComponent implements OnInit {
 
         this.onGetPage(0);
       });
+  }
+
+  processTrackingSheet() {
+    console.log('Processing tracking sheet...');
+    this.isProcessingTrackingSheet = true;
+    this.trackingSheetService.processTrackingSheetStats()
   }
 
   onGetPage(page: number) {

@@ -7,4 +7,5 @@ export interface Images{
     croppedPath: string
     cropped: boolean
     deleted: boolean
+    url: string
 }

@@ -22,12 +22,11 @@ export type CropperDialogResult = {
 @Component({
   selector: 'app-images',
   standalone: true,
-  imports: [ FormsModule, CommonModule, ReactiveFormsModule ],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule],
   templateUrl: './images.component.html',
   styleUrl: './images.component.css',
 })
 export class ImagesComponent implements OnInit {
-  
   @Output() dataUpdated = new EventEmitter<void>();
 
   apiResponse: APIResponse;
@@ -53,6 +52,7 @@ export class ImagesComponent implements OnInit {
     cardProClientId: '',
     attachmentFileName: '',
     attachmentPath: '',
+    url: '',
     croppedPath: '',
     cropped: false,
     deleted: false,
@@ -97,7 +97,6 @@ export class ImagesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    
     this.imagesService.response.subscribe((response) => {
       this.isFetchingData = false;
 
@@ -142,7 +141,6 @@ export class ImagesComponent implements OnInit {
 
     this.imagesService.deletionResponse.subscribe((response) => {
       if (response.isSuccessful && response.data != null) {
-
         // notify WorkSheetsComponent that data has been updated
         this.dataUpdated.emit();
 

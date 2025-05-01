@@ -88,7 +88,6 @@ export class CardProSheetService {
           apiResponse.errorMessage = 'Unknown error occured';
         }
 
-        // console.log('CardPro Stats:', apiResponse.data);
         this.cardProStatsResponse.next(apiResponse);
 
       },

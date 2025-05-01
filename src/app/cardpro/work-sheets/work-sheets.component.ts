@@ -3,7 +3,7 @@ import { TrackingSheetComponent } from './tracking-sheet/tracking-sheet.componen
 import { FilesService } from '../file-uploads-downloads/files.service';
 import { CommonModule } from '@angular/common';
 import { TrackingSheetService } from './tracking-sheet/tracking-sheet.service';
-import { TrackingSheetClient } from './tracking-sheet/tracking-sheet.model';
+import { TrackingSheetClient } from './tracking-sheet/model/tracking-sheet.model';
 import { CardProSheetService } from './cardpro-sheet/cardpro.service';
 import { ImagesComponent } from './images/images.component';
 import { ImagesService } from './images/images.service';
@@ -28,7 +28,7 @@ export class WorkSheetsComponent implements OnInit {
   // ImagesComponent notifies WorkSheetsComponent by updating this signal
   dataUpdated = signal<boolean>(false);
 
-  // Notify flag for C
+  // Notify flag for CardProSheetComponent
   notifyCardProSheetComponent = signal(false);
 
   isCardProTabActive: boolean = true;
@@ -43,6 +43,11 @@ export class WorkSheetsComponent implements OnInit {
   ) {
     effect(
       () => {
+
+       console.log("AT: ", this.activeTab() === 'CardPro Clients');
+       console.log("DU: ", this.dataUpdated());
+       console.log("logic: ", this.activeTab() === 'CardPro Clients' && this.dataUpdated());
+
         if (this.activeTab() === 'CardPro Clients' && this.dataUpdated()) {
           this.notifyCardProSheetComponent.set(true);
         }
@@ -101,7 +106,6 @@ export class WorkSheetsComponent implements OnInit {
 
   // Called by ImagesComponent when it has new data
   onDataUpdatedByImagesComponent() {
-    console.log("data updated by ImagesComponent");
     this.dataUpdated.set(true);
   }
 

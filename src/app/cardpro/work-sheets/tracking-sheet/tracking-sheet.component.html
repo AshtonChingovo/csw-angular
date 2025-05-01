@@ -1,72 +1,68 @@
 <div *ngIf="isDataAvailable">
   <!-- Stats, Search & Filter UI -->
   <!-- <div class="flex items-center justify-between pt-3 pb-3 mb-4 border-b border-t border-gray-100"></div> -->
-  <div class="flex items-center justify-between mb-4 bg-gray-50 p-3">
-    <div class="flex gap-10">
-      <div class="flex flex-col items-center">
-        <div class="text-sm font-semibold">128</div>
-        <div class="text-gray-500 text-xs">Total Files</div>
-      </div>
-      <div class="flex flex-col items-center">
-        <div class="text-sm font-semibold">43</div>
-        <div class="text-gray-500 text-xs">Ready</div>
-      </div>
-      <div class="flex flex-col items-center">
-        <div class="text-sm font-semibold">85</div>
-        <div class="text-gray-500 text-xs">Pending</div>
-      </div>
-    </div>
-
-    <div class="flex items-center gap-2">
-      <div class="relative w-48">
-        <svg class="absolute left-2 top-2 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input type="search" placeholder="Search..."
-          class="pl-8 h-8 text-sm w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300" />
+  <div [formGroup]="filterForm">
+    <div class="flex items-center justify-between mb-4 bg-gray-50 p-3">
+      
+      <div class="flex gap-10" *ngIf="isStatsDataAvailable">
+        <div class="flex flex-col items-center">
+          <div class="text-sm font-semibold">{{ trackingSheetStats.totalClients }}</div>
+          <div class="text-gray-500 text-xs">Total Unique Client Emails</div>
+        </div>
+        <!-- <div class="flex flex-col items-center">
+          <div class="text-sm font-semibold">43</div>
+          <div class="text-gray-500 text-xs">Ready</div>
+        </div>
+        <div class="flex flex-col items-center">
+          <div class="text-sm font-semibold">85</div>
+          <div class="text-gray-500 text-xs">Pending</div>
+        </div> -->
       </div>
 
-      <div class="relative">
-        <button class="flex items-center gap-1 px-2 h-8 text-sm border rounded-md bg-white hover:bg-gray-50">
-          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <line x1="4" y1="21" x2="4" y2="14"></line>
-            <line x1="4" y1="10" x2="4" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="12"></line>
-            <line x1="12" y1="8" x2="12" y2="3"></line>
-            <line x1="20" y1="21" x2="20" y2="16"></line>
-            <line x1="20" y1="12" x2="20" y2="3"></line>
-            <line x1="1" y1="14" x2="7" y2="14"></line>
-            <line x1="9" y1="8" x2="15" y2="8"></line>
-            <line x1="17" y1="16" x2="23" y2="16"></line>
+      <div class="flex items-center gap-2">
+        <div class="relative w-48">
+          <svg class="absolute left-2 top-2 h-4 w-4 text-gray-400" fill="none" stroke="currentColor"
+            viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          Filter
-          <svg class="h-3 w-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <polyline points="6 9 12 15 18 9"></polyline>
-          </svg>
-        </button>
+          <input type="search" placeholder="Search..." formControlName="search"
+            class="pl-8 h-8 text-sm w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300" />
+        </div>
 
-        <!-- Dropdown Menu -->
-        <div class="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg hidden group-hover:block">
-          <div class="p-2 text-sm text-gray-700">
-            <label class="flex items-center space-x-2">
-              <input type="checkbox" checked class="form-checkbox" />
-              <span>Ready</span>
-            </label>
-            <label class="flex items-center space-x-2 mt-2">
-              <input type="checkbox" class="form-checkbox" />
-              <span>Pending</span>
-            </label>
-            <label class="flex items-center space-x-2 mt-2">
-              <input type="checkbox" class="form-checkbox" />
-              <span>Completed</span>
-            </label>
-            <label class="flex items-center space-x-2 mt-2">
-              <input type="checkbox" class="form-checkbox" />
-              <span>Archived</span>
-            </label>
+        <!-- Filter -->
+        <div class="relative w-48">
+          <!-- Actual select -->
+          <select formControlName="filter"
+            class="pl-8 pr-6 h-8 text-sm border rounded-md bg-white hover:bg-gray-50 appearance-none w-full">
+            <option value="all">All</option>
+            <option value="active_membership">Active Members</option>
+            <option value="renewal_due">Due Renewal</option>
+          </select>
+
+          <!-- Left Icon (absolute inside) -->
+          <div class="absolute inset-y-0 left-2 flex items-center pointer-events-none">
+            <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <line x1="4" y1="21" x2="4" y2="14"></line>
+              <line x1="4" y1="10" x2="4" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12" y2="3"></line>
+              <line x1="20" y1="21" x2="20" y2="16"></line>
+              <line x1="20" y1="12" x2="20" y2="3"></line>
+              <line x1="1" y1="14" x2="7" y2="14"></line>
+              <line x1="9" y1="8" x2="15" y2="8"></line>
+              <line x1="17" y1="16" x2="23" y2="16"></line>
+            </svg>
+          </div>
+
+          <!-- Right Arrow -->
+          <div class="absolute inset-y-0 right-2 flex items-center pointer-events-none">
+            <svg class="h-3 w-3 text-gray-400 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -116,54 +112,56 @@
     <ul class="flex justify-end items-center space-x-2">
       <!-- First page button -->
       <li (click)="onGetStartPage()" [class.opacity-50]="!isStartEnabled" [class.cursor-not-allowed]="!isStartEnabled">
-        <button class="w-9 h-9 flex items-center justify-center rounded-md bg-white border border-gray-300 hover:bg-gray-100">
+        <button
+          class="w-9 h-9 flex items-center justify-center rounded-md bg-white border border-gray-300 hover:bg-gray-100">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20l-7-8 7-8M12 20l-7-8 7-8" />
           </svg>
         </button>
       </li>
-  
+
       <!-- Previous page button -->
       <li (click)="onGetPreviousPage()" [class.opacity-50]="!isPrevEnabled" [class.cursor-not-allowed]="!isPrevEnabled">
-        <button class="w-9 h-9 flex items-center justify-center rounded-md bg-white border border-gray-300 hover:bg-gray-100">
+        <button
+          class="w-9 h-9 flex items-center justify-center rounded-md bg-white border border-gray-300 hover:bg-gray-100">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
       </li>
-  
+
       <!-- Page numbers -->
       <li *ngFor="let page of pages" (click)="onGetPage(page - 1)">
-        <button
-          [ngClass]="{
-            'bg-blue-500 text-white': page === currentPage,
+        <button [ngClass]="{
+            'bg-black text-white': page === currentPage,
             'bg-white text-gray-700 hover:bg-gray-100': page !== currentPage
           }"
-          class="w-9 h-9 flex items-center justify-center rounded-md border border-gray-300 transition-all duration-150"
-        >
+          class="w-9 h-9 flex items-center justify-center rounded-md border border-gray-300 transition-all duration-150">
           {{ page }}
         </button>
       </li>
-  
+
       <!-- Next page button -->
       <li (click)="onGetNextPage()" [class.opacity-50]="!isNextEnabled" [class.cursor-not-allowed]="!isNextEnabled">
-        <button class="w-9 h-9 flex items-center justify-center rounded-md bg-white border border-gray-300 hover:bg-gray-100">
+        <button
+          class="w-9 h-9 flex items-center justify-center rounded-md bg-white border border-gray-300 hover:bg-gray-100">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
         </button>
       </li>
-  
+
       <!-- Last page button -->
       <li (click)="onGetEndPage()" [class.opacity-50]="!isEndEnabled" [class.cursor-not-allowed]="!isEndEnabled">
-        <button class="w-9 h-9 flex items-center justify-center rounded-md bg-white border border-gray-300 hover:bg-gray-100">
+        <button
+          class="w-9 h-9 flex items-center justify-center rounded-md bg-white border border-gray-300 hover:bg-gray-100">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4l7 8-7 8M12 4l7 8-7 8" />
           </svg>
         </button>
       </li>
     </ul>
-  </nav>  
+  </nav>
 
 </div>
 

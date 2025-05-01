@@ -91,7 +91,7 @@ export class ImagesService {
           apiResponse.errorMessage = 'Unknown error occured';
         }
 
-        console.log('CardPro Stats:', apiResponse.data);
+        // console.log('CardPro Stats:', apiResponse.data);
         this.cardProStatsResponse.next(apiResponse);
 
       },
