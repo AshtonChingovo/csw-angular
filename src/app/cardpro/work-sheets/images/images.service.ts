@@ -55,9 +55,6 @@ export class ImagesService {
           }
 
           this.response.next(apiResponse);
-
-          //get stats
-          this.getImagesStats();
         },
         error: (e) => {
           var apiResponse = new APIResponse();

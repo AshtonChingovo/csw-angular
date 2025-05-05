@@ -136,6 +136,9 @@ export class ImagesComponent implements OnInit {
         this.isPrevEnabled = paginationParams.isPrevEnabled;
         this.isNextEnabled = paginationParams.isNextEnabled;
         this.isEndEnabled = paginationParams.isEndEnabled;
+
+        //get stats
+        this.imagesService.getImagesStats();
       }
     });
 

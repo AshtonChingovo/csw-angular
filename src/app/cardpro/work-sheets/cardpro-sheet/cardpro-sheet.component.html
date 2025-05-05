@@ -167,7 +167,7 @@
           <!-- Page numbers -->
           <li *ngFor="let page of pages" (click)="onGetPage(page - 1)">
             <button [ngClass]="{
-                'bg-blue-500 text-white': page === currentPage,
+                'bg-black text-white': page === currentPage,
                 'bg-white text-gray-700 hover:bg-gray-100': page !== currentPage
               }"
               class="w-9 h-9 flex items-center justify-center rounded-md border border-gray-300 transition-all duration-150">

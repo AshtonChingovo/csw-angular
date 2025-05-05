@@ -1,6 +1,6 @@
 
 export interface TrackingSheetStats{
     totalClients: number
-    renewal: number
+    totalRenewed: number
     dueRenewal: number
 }

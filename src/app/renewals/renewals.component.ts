@@ -13,6 +13,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { TrackingSheetStats } from '../cardpro/work-sheets/tracking-sheet/model/tracking-sheet-stats.model';
 
 @Component({
   selector: 'app-renewals',
@@ -27,8 +28,8 @@ export class RenewalsComponent {
   trackingSheetClients: TrackingSheetClient[];
   paginationResponseModel: PaginationAPIResponseModel;
 
-  ACTIVE_MEMBERSHIP = "active";
-  RENEWAL_DUE = "renewal_due";
+  ACTIVE_MEMBERSHIP = 'active';
+  RENEWAL_DUE = 'renewal_due';
 
   // search and filter form group
   filterForm: FormGroup;
@@ -51,6 +52,10 @@ export class RenewalsComponent {
 
   isRenewingClient = false;
 
+  // stats variables
+  trackingSheetStats: TrackingSheetStats;
+  isStatsDataAvailable: boolean = false;
+
   // client being renewed
   trackingSheetRenewalClient: TrackingSheetClient;
 
@@ -61,10 +66,19 @@ export class RenewalsComponent {
   ) {}
 
   ngOnInit(): void {
-
     this.trackingSheetService.trackingSheetStatsResponse.subscribe(
       (response) => {
         this.isFetchingData = false;
+
+        if (response.isSuccessful && response.data != null) {
+          this.isStatsDataAvailable = true;
+
+          this.trackingSheetStats = response.data.data;
+
+          if (this.trackingSheetStats != null) {
+            this.isStatsDataAvailable = true;
+          }
+        }
       }
     );
 
@@ -99,33 +113,38 @@ export class RenewalsComponent {
         this.isNextEnabled = paginationParams.isNextEnabled;
         this.isEndEnabled = paginationParams.isEndEnabled;
 
+        // get latest tracking sheet stats
+        this.trackingSheetService.getTrackingSheetStats();
       }
     });
 
-    this.trackingSheetService.renewalTrackingSheetResponse.subscribe((response) => {
-      this.isFetchingData = false;
+    this.trackingSheetService.renewalTrackingSheetResponse.subscribe(
+      (response) => {
+        this.isFetchingData = false;
 
-      if (response.isSuccessful) {
-        this.isProcessingTrackingSheet = false;
+        if (response.isSuccessful) {
+          this.isProcessingTrackingSheet = false;
 
-        this.onGetPage(0);
+          // get the first page of results after processing
+          this.onGetPage(0);
+        }
       }
-    });
+    );
 
-    this.trackingSheetService.clientRenewalTrackingSheetResponse.subscribe((response) => {
-      this.trackingSheetRenewalClient.renewing = false;
+    this.trackingSheetService.clientRenewalTrackingSheetResponse.subscribe(
+      (response) => {
+        this.trackingSheetRenewalClient.renewing = false;
 
-      console.log('Renewal client:', response.data);
+        if (response.isSuccessful) {
+          this.trackingSheetRenewalClient = response.data;
 
-      if (response.isSuccessful) {
-        
-        this.trackingSheetRenewalClient.renewing = response.data;
+          // get latest tracking sheet stats
+          this.trackingSheetService.getTrackingSheetStats();
 
-        // this.trackingSheetClients.find(client -> client);
-
-        this.onGetPage(0);
+          // this.onGetPage(0);
+        }
       }
-    });
+    );
 
     this.filterForm = this.formBuilder.group({
       search: [''],
@@ -144,13 +163,11 @@ export class RenewalsComponent {
   }
 
   processTrackingSheet() {
-    console.log('Processing tracking sheet...');
     this.isProcessingTrackingSheet = true;
-    this.trackingSheetService.processTrackingSheetStats()
+    this.trackingSheetService.processTrackingSheetStats();
   }
 
   onRenewClient(client: TrackingSheetClient) {
-
     this.trackingSheetRenewalClient = client;
     this.trackingSheetRenewalClient.renewing = true;
 

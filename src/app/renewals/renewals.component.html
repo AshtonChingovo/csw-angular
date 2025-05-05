@@ -4,13 +4,13 @@
     <!-- <div class="flex items-center justify-between pt-3 pb-3 mb-4 border-b border-t border-gray-100"></div> -->
     <form [formGroup]="filterForm">
         <div class="flex items-center justify-between mb-4 bg-gray-50 p-3">
-            <div class="flex gap-10">
+            <div class="flex gap-10" *ngIf="isStatsDataAvailable">
                 <div class="flex flex-col items-center">
-                    <div class="text-sm font-semibold">128</div>
-                    <div class="text-gray-500 text-xs">Total Clients</div>
+                    <div class="text-sm font-semibold">{{ trackingSheetStats.totalClients }}</div>
+                    <div class="text-gray-500 text-xs">Total Unique Client Emails </div>
                 </div>
                 <div class="flex flex-col items-center">
-                    <div class="text-sm font-semibold">43</div>
+                    <div class="text-sm font-semibold">{{ trackingSheetStats.totalRenewed }}</div>
                     <div class="text-gray-500 text-xs">Total Renewed</div>
                 </div>
             </div>
@@ -99,7 +99,7 @@
         }">
                 <td class="px-4 py-2 text-sm text-gray-600">{{ i + 2 }}</td>
                 <td class="px-4 py-2 text-sm text-gray-600">{{ item.name }} {{ item.surname }}</td>
-                <td class="px-4 py-2 text-sm text-gray-600">{{ item.id }}</td>
+                <td class="px-4 py-2 text-sm text-gray-600">{{ item.email }}</td>
                 <td class="px-4 py-2 text-sm text-gray-600">{{ item.registrationNumber }}</td>
                 <td class="px-4 py-2 text-sm text-gray-600">{{ item.registrationYear }}</td>
                 <td class="px-4 py-2 text-sm text-gray-600">
@@ -112,8 +112,7 @@
                         *ngIf="item.membershipStatus === RENEWAL_DUE">Due Renewal</span>
                 </td>
                 <td class="px-4 py-4 text-sm text-gray-600">
-                    <button *ngIf="item.membershipStatus === RENEWAL_DUE"
-                        (click)="onRenewClient(item)"
+                    <button *ngIf="item.membershipStatus === RENEWAL_DUE" (click)="onRenewClient(item)"
                         class="flex items-center px-3 py-1 bg-green-500 text-white rounded-full shadow-sm hover:bg-green-600 transition text-xs">
 
                         <!-- Upload icon or spinner -->

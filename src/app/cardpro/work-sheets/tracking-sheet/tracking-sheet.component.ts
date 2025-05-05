@@ -100,6 +100,8 @@ export class TrackingSheetComponent implements OnInit {
 
       if (response.isSuccessful && response.data != null) {
 
+        this.isStatsDataAvailable = true;
+
         this.trackingSheetStats = response.data.data;
 
         if (this.trackingSheetStats != null) {
