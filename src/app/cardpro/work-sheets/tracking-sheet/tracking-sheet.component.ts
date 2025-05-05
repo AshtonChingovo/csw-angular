@@ -134,7 +134,7 @@ export class TrackingSheetComponent implements OnInit {
     this.trackingSheetService.getTrackingSheetClients({
       pageNumber: page,
       pageSize: 20,
-      sortBy: 'registrationYear',
+      sortBy: 'sheetYear',
       search: this.search,
       filter: this.filter,
     });

@@ -7,6 +7,7 @@ export interface TrackingSheetClient{
     registrationNumber: string
     practiceNumber: string
     registrationYear: string
+    sheetYear: string
     phone_number: string
     membershipStatus: string
     renewing: boolean

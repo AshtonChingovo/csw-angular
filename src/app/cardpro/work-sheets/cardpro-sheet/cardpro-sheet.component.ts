@@ -113,12 +113,6 @@ export class CardproSheetComponent {
         this.search = '';
         this.filter = 'all';
 
-        console.log(
-          'CardproSheetComponent: reacting to update from ImagesComponent'
-        );
-        
-        console.log('Current page:', this.apiResponse.data.currentPage);
-
         this.onGetPage(this.apiResponse.data.currentPage);
 
         this.acknowledge.emit();
