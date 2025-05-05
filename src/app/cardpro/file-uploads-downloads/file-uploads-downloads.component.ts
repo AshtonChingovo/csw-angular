@@ -53,6 +53,8 @@ export class FileUploadsDownloadsComponent implements OnInit {
     this.filesService.downloadCardProSheetEventSubject.subscribe((response) => {
       this.isDownloadingCardProSheet = false;
       this.isCardProSheetDownloaded = response.isSuccessful;
+
+      this.closeDownloadFilesModal();
     });
 
     this.filesService.OAuthResponse.subscribe((response) => {
@@ -93,7 +95,7 @@ export class FileUploadsDownloadsComponent implements OnInit {
     this.isDownloadingCardProSheet = true;
     this.isCardProSheetDownloaded = false;
 
-    this.closeDownloadFilesModal()
+    // this.closeDownloadFilesModal()
 
     this.filesService.downloadCardProSheet(
       this.batchNumberForm.value.batchNumber
