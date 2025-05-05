@@ -1,5 +1,6 @@
 
 export interface TrackingSheetClient{
+    id: string
     name: string
     surname: string
     email: string
@@ -8,4 +9,5 @@ export interface TrackingSheetClient{
     registrationYear: string
     phone_number: string
     membershipStatus: string
+    renewing: boolean
 }

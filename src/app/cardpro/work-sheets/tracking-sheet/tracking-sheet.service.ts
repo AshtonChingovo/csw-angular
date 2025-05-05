@@ -4,6 +4,7 @@ import { APIResponse } from '../../../util/api-response.model';
 import { Subject } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
 import { PageRequestModel } from '../../../util/page-request.model';
+import { TrackingSheetRenewalClient } from './model/tracking-sheet-renewal.model';
 
 @Injectable({ providedIn: 'root' })
 export class TrackingSheetService {
@@ -11,6 +12,7 @@ export class TrackingSheetService {
   response = new Subject<APIResponse>();
   trackingSheetStatsResponse = new Subject<APIResponse>();
   renewalTrackingSheetResponse = new Subject<APIResponse>();
+  clientRenewalTrackingSheetResponse = new Subject<APIResponse>();
 
   constructor(private httpClient: HttpClient) {}
 
@@ -117,7 +119,6 @@ export class TrackingSheetService {
             apiResponse.errorMessage = 'Unknown error occured';
           }
 
-          console.log('Renewal TrackingSheetResponse:', apiResponse.isSuccessful);
           this.renewalTrackingSheetResponse.next(apiResponse);
 
         },
@@ -131,4 +132,35 @@ export class TrackingSheetService {
         },
       });
   }
+
+  postTrackingSheetRenewal(trackingSheetRenewalClient: TrackingSheetRenewalClient) {
+    this.httpClient
+      .post(environment.baseUrl + '/tracking-sheet/renewals', trackingSheetRenewalClient, {
+        observe: 'response',
+      })
+      .subscribe({
+        next: (httpResponse) => {
+          var apiResponse = new APIResponse();
+
+          if (httpResponse.status == HttpStatusCode.Ok) {
+            apiResponse.isSuccessful = true;
+            apiResponse.data = httpResponse.body;
+          } else {
+            apiResponse.isSuccessful = false;
+            apiResponse.errorMessage = 'Unknown error occured';
+          }
+
+          this.clientRenewalTrackingSheetResponse.next(apiResponse);
+        },
+        error: (e) => {
+          var apiResponse = new APIResponse();
+
+          apiResponse.isSuccessful = false;
+          apiResponse.errorMessage = 'Unknown error occured';
+
+          this.clientRenewalTrackingSheetResponse.next(apiResponse);
+        },
+      });
+  }
+
 }

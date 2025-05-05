@@ -49,6 +49,11 @@ export class RenewalsComponent {
   isProcessingTrackingSheet: boolean = false;
   isFetchingData: boolean;
 
+  isRenewingClient = false;
+
+  // client being renewed
+  trackingSheetRenewalClient: TrackingSheetClient;
+
   constructor(
     private trackingSheetService: TrackingSheetService,
     private paginationService: PaginationService,
@@ -107,6 +112,21 @@ export class RenewalsComponent {
       }
     });
 
+    this.trackingSheetService.clientRenewalTrackingSheetResponse.subscribe((response) => {
+      this.trackingSheetRenewalClient.renewing = false;
+
+      console.log('Renewal client:', response.data);
+
+      if (response.isSuccessful) {
+        
+        this.trackingSheetRenewalClient.renewing = response.data;
+
+        // this.trackingSheetClients.find(client -> client);
+
+        this.onGetPage(0);
+      }
+    });
+
     this.filterForm = this.formBuilder.group({
       search: [''],
       filter: ['all'],
@@ -127,6 +147,14 @@ export class RenewalsComponent {
     console.log('Processing tracking sheet...');
     this.isProcessingTrackingSheet = true;
     this.trackingSheetService.processTrackingSheetStats()
+  }
+
+  onRenewClient(client: TrackingSheetClient) {
+
+    this.trackingSheetRenewalClient = client;
+    this.trackingSheetRenewalClient.renewing = true;
+
+    this.trackingSheetService.postTrackingSheetRenewal(client);
   }
 
   onGetPage(page: number) {
