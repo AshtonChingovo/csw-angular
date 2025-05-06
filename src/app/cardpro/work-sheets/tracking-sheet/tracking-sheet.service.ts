@@ -89,7 +89,7 @@ export class TrackingSheetService {
             apiResponse.errorMessage = 'Unknown error occured';
           }
 
-          console.log('TrackingSheet Stats:', apiResponse.data);
+          // console.log('TrackingSheet Stats:', apiResponse.data);
           this.trackingSheetStatsResponse.next(apiResponse);
         },
         error: (e) => {

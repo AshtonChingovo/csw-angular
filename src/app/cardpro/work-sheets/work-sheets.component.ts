@@ -43,11 +43,6 @@ export class WorkSheetsComponent implements OnInit {
   ) {
     effect(
       () => {
-
-       console.log("AT: ", this.activeTab() === 'CardPro Clients');
-       console.log("DU: ", this.dataUpdated());
-       console.log("logic: ", this.activeTab() === 'CardPro Clients' && this.dataUpdated());
-
         if (this.activeTab() === 'CardPro Clients' && this.dataUpdated()) {
           this.notifyCardProSheetComponent.set(true);
         }

@@ -55,8 +55,6 @@ export class TrackingSheetComponent implements OnInit {
 
     this.trackingSheetService.response.subscribe((response) => {
 
-      console.log("TrackingSheetComponent <-> Active")
-
       this.isFetchingData = false;
 
       if (response.isSuccessful && response.data != null) {

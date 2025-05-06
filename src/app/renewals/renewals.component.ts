@@ -136,7 +136,8 @@ export class RenewalsComponent {
         this.trackingSheetRenewalClient.renewing = false;
 
         if (response.isSuccessful) {
-          this.trackingSheetRenewalClient = response.data;
+          // update the renewed client in the list
+          this.trackingSheetClients[this.trackingSheetClients.indexOf(this.trackingSheetRenewalClient)] = response.data;
 
           // get latest tracking sheet stats
           this.trackingSheetService.getTrackingSheetStats();

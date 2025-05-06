@@ -32,7 +32,7 @@
                     <select formControlName="filter"
                         class="pl-8 pr-6 h-8 text-sm border rounded-md bg-white hover:bg-gray-50 appearance-none w-full">
                         <option value="all">All</option>
-                        <option value="active_membership">Active Members</option>
+                        <option value="active">Active Members</option>
                         <option value="renewal_due">Due Renewal</option>
                     </select>
 
@@ -60,6 +60,32 @@
                     </div>
                 </div>
 
+                <!-- Vertical Divider -->
+                <div class="h-6 border-l border-gray-300 mx-2"></div>
+
+                <!-- Refresh Button -->
+                <button type="button" (click)="processTrackingSheet()"
+                class="h-8 px-3 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100 active:bg-gray-200 transition flex items-center gap-x-1">
+            
+                <!-- Upload icon or spinner -->
+                <ng-container *ngIf="!isProcessingTrackingSheet; else refreshTrackingSheet">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                        <path d="M3 3v5h5" />
+                        <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                        <path d="M16 16h5v5" />
+                    </svg>
+                </ng-container>
+            
+                <ng-template #refreshTrackingSheet>
+                    <span class="inline-block w-4 h-4 border-2 border-gray-500 border-t-transparent rounded-full animate-spin"></span>
+                </ng-template>
+            
+                <span>Refresh T.S.</span>
+            </button>
+            
+
             </div>
         </div>
     </form>
@@ -81,7 +107,10 @@
                     Reg #
                 </th>
                 <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                    Reg Year
+                    Prac #
+                </th>
+                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                    T.S. Year
                 </th>
                 <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">
                     Membership
@@ -101,6 +130,7 @@
                 <td class="px-4 py-2 text-sm text-gray-600">{{ item.name }} {{ item.surname }}</td>
                 <td class="px-4 py-2 text-sm text-gray-600">{{ item.email }}</td>
                 <td class="px-4 py-2 text-sm text-gray-600">{{ item.registrationNumber }}</td>
+                <td class="px-4 py-2 text-sm text-gray-600">{{ item.practiceNumber }}</td>
                 <td class="px-4 py-2 text-sm text-gray-600">{{ item.sheetYear }}</td>
                 <td class="px-4 py-2 text-sm text-gray-600">
                     <span
