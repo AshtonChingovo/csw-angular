@@ -7,7 +7,7 @@ import { CardproComponent } from './cardpro/cardpro.component';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterModule, CardproComponent],
+  imports: [CommonModule, RouterOutlet, RouterModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })

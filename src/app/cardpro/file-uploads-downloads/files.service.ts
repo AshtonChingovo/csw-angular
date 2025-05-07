@@ -88,9 +88,6 @@ export class FilesService {
           if (httpResponse.status == HttpStatusCode.Created) {
             apiResponse.isSuccessful = true;
           } else if(httpResponse.status == HttpStatusCode.Unauthorized) {
-            console.log('API ERROR CLAUSE');
-            console.log('API Error: ', httpResponse);
-
             apiResponse.isSuccessful = false;
             apiResponse.errorMessage = 'Unknown error occured';
           } else {
