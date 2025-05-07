@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FilesService } from './files.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
+import { HttpStatusCode } from '@angular/common/http';
+import { AppService } from '../../apps.service';
 
 @Component({
   selector: 'app-card-pro-menu-buttons',
@@ -32,7 +34,7 @@ export class FileUploadsDownloadsComponent implements OnInit {
   // oauth modal body variable
   redirectURL = '';
 
-  constructor(private filesService: FilesService) {}
+  constructor(private filesService: FilesService, private appService: AppService) {}
 
   ngOnInit(): void {
     this.filesService.trackingSheetEventSubject.subscribe((response) => {
@@ -43,6 +45,11 @@ export class FileUploadsDownloadsComponent implements OnInit {
     this.filesService.imagesEventSubject.subscribe((response) => {
       this.isExtractingImages = false;
       this.isImagesExtracted = response.isSuccessful;
+
+      if(response.statusCode == HttpStatusCode.Unauthorized){
+        this.appService.getOAuthUrl();
+      }
+
     });
 
     this.filesService.cardProSheetEventSubject.subscribe((response) => {
@@ -53,8 +60,6 @@ export class FileUploadsDownloadsComponent implements OnInit {
     this.filesService.downloadCardProSheetEventSubject.subscribe((response) => {
       this.isDownloadingCardProSheet = false;
       this.isCardProSheetDownloaded = response.isSuccessful;
-
-      this.closeDownloadFilesModal();
     });
 
     this.filesService.OAuthResponse.subscribe((response) => {
@@ -95,7 +100,7 @@ export class FileUploadsDownloadsComponent implements OnInit {
     this.isDownloadingCardProSheet = true;
     this.isCardProSheetDownloaded = false;
 
-    // this.closeDownloadFilesModal()
+    this.closeDownloadFilesModal()
 
     this.filesService.downloadCardProSheet(
       this.batchNumberForm.value.batchNumber

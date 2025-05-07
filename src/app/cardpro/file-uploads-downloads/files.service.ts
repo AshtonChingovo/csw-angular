@@ -83,8 +83,16 @@ export class FilesService {
         next: (httpResponse) => {
           var apiResponse = new APIResponse();
 
+          console.log("API StatusCode: ", httpResponse.status)
+
           if (httpResponse.status == HttpStatusCode.Created) {
             apiResponse.isSuccessful = true;
+          } else if(httpResponse.status == HttpStatusCode.Unauthorized) {
+            console.log('API ERROR CLAUSE');
+            console.log('API Error: ', httpResponse);
+
+            apiResponse.isSuccessful = false;
+            apiResponse.errorMessage = 'Unknown error occured';
           } else {
             apiResponse.isSuccessful = false;
             apiResponse.errorMessage = 'Unknown error occured';
@@ -94,6 +102,10 @@ export class FilesService {
         },
         error: (e) => {
           var apiResponse = new APIResponse();
+
+          if(e.status == HttpStatusCode.Unauthorized) {
+            apiResponse.statusCode = HttpStatusCode.Unauthorized;
+          }
 
           apiResponse.isSuccessful = false;
           apiResponse.errorMessage = 'Unknown error occured';

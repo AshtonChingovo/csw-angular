@@ -11,7 +11,6 @@ export class CardProSheetService {
 
   response = new Subject<APIResponse>();
   cardProStatsResponse = new Subject<APIResponse>();
-  cardProDownloadResponse = new Subject<APIResponse>();
 
   constructor(private httpClient: HttpClient) {}
 

@@ -10,14 +10,14 @@
         <div class="flex items-center justify-between mb-4 bg-gray-50 p-3">
           <div class="flex gap-10">
             <div class="flex flex-col items-center">
-              <div class="text-sm font-semibold">{{ cardProSheetStats.processedEmails }}</div>
+              <div class="text-sm font-semibold">{{ cardProSheetStats.totalEmails }}</div>
               <div class="text-gray-500 text-xs">Emails Processed</div>
             </div>
             <div class="flex flex-col items-center" (click)="setActiveStats('notInTrackingSheet')">
               <div class="text-sm font-semibold">{{ cardProSheetStats.notInTrackingSheet }}</div>
               <div class="text-gray-500 text-xs">Not in T.S</div>
             </div>
-            <div class="flex flex-col items-center"  (click)="setActiveStats('multipleImages')">
+            <div class="flex flex-col items-center" (click)="setActiveStats('multipleImages')">
               <div class="text-sm font-semibold">{{ cardProSheetStats.totalEmailsWithMultipleImages }}</div>
               <div class="text-gray-500 text-xs">Multiple Images</div>
             </div>

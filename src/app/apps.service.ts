@@ -8,6 +8,7 @@ import { environment } from '../environments/environment.development';
 export class AppService {
 
   response = new Subject<APIResponse>();
+  OAuthResponse = new Subject<APIResponse>();
 
   constructor(private httpClient: HttpClient) {}
 
@@ -48,6 +49,45 @@ export class AppService {
           apiResponse.errorMessage = 'Unknown error occured';
 
           this.response.next(apiResponse);
+        },
+      });
+  }
+
+  getOAuthUrl() {
+    this.httpClient
+      .get(
+        environment.baseUrl +
+          '/oauth2/auth-url' ,
+        { observe: 'response' }
+      )
+      .subscribe({
+        next: (httpResponse) => {
+          var apiResponse = new APIResponse();
+
+          if (httpResponse.status == HttpStatusCode.Ok) {
+
+            apiResponse.isSuccessful = true;
+
+            if (httpResponse.body != null) {
+              apiResponse.data = httpResponse.body;
+            }
+
+          } else {
+            apiResponse.isSuccessful = false;
+            apiResponse.errorMessage = 'Unknown error occured';
+          }
+
+          this.OAuthResponse.next(apiResponse);
+
+        },
+        error: (e) => {
+
+          var apiResponse = new APIResponse();
+
+          apiResponse.isSuccessful = false;
+          apiResponse.errorMessage = 'Unknown error occured';
+
+          this.OAuthResponse.next(apiResponse);
         },
       });
   }

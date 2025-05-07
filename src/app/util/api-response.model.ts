@@ -5,4 +5,5 @@ export class APIResponse{
     data: any
     // POST, GET, PUT, DELETE
     requestType?: string
+    statusCode?: number
 }

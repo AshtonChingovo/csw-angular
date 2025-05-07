@@ -13,6 +13,8 @@ import {
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
+import { HttpStatusCode } from '@angular/common/http';
+import { AppService } from '../../../apps.service';
 
 export type CropperDialogResult = {
   blob: Blob;
@@ -92,6 +94,7 @@ export class ImagesComponent implements OnInit {
 
   constructor(
     private imagesService: ImagesService,
+    private appService: AppService,
     private paginationService: PaginationService,
     private formBuilder: FormBuilder
   ) {}
@@ -139,6 +142,10 @@ export class ImagesComponent implements OnInit {
 
         //get stats
         this.imagesService.getImagesStats();
+      }
+      else if (response.statusCode != HttpStatusCode.Unauthorized) {
+        // user needs to get oauth url
+        this.appService.getOAuthUrl();
       }
     });
 
