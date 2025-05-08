@@ -9,6 +9,9 @@ export interface TrackingSheetClient{
     registrationYear: string
     sheetYear: string
     phone_number: string
-    membershipStatus: string
+    membershipStatus: string    
+    headshotRequestEmailSent: boolean
+    // variables to track the status of the client when processing something
     renewing: boolean
+    emailingClient: boolean
 }

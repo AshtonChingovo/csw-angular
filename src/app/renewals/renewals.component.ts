@@ -49,15 +49,15 @@ export class RenewalsComponent {
   isDataAvailable: boolean = false;
   isProcessingTrackingSheet: boolean = false;
   isFetchingData: boolean;
-
   isRenewingClient = false;
+  isEmailingClient = false;
 
   // stats variables
   trackingSheetStats: TrackingSheetStats;
   isStatsDataAvailable: boolean = false;
 
-  // client being renewed
-  trackingSheetRenewalClient: TrackingSheetClient;
+  // client being renewed or emailed
+  trackingSheetClientProcessing: TrackingSheetClient;
 
   constructor(
     private trackingSheetService: TrackingSheetService,
@@ -131,13 +131,14 @@ export class RenewalsComponent {
       }
     );
 
-    this.trackingSheetService.clientRenewalTrackingSheetResponse.subscribe(
+    this.trackingSheetService.clientProcessingAPIResponse.subscribe(
       (response) => {
-        this.trackingSheetRenewalClient.renewing = false;
+        this.trackingSheetClientProcessing.renewing = false;
+        this.trackingSheetClientProcessing.emailingClient = false;
 
         if (response.isSuccessful) {
           // update the renewed client in the list
-          this.trackingSheetClients[this.trackingSheetClients.indexOf(this.trackingSheetRenewalClient)] = response.data;
+          this.trackingSheetClients[this.trackingSheetClients.indexOf(this.trackingSheetClientProcessing)] = response.data;
 
           // get latest tracking sheet stats
           this.trackingSheetService.getTrackingSheetStats();
@@ -169,10 +170,17 @@ export class RenewalsComponent {
   }
 
   onRenewClient(client: TrackingSheetClient) {
-    this.trackingSheetRenewalClient = client;
-    this.trackingSheetRenewalClient.renewing = true;
+    this.trackingSheetClientProcessing = client;
+    this.trackingSheetClientProcessing.renewing = true;
 
     this.trackingSheetService.postTrackingSheetRenewal(client);
+  }
+
+  onEmailClient(client: TrackingSheetClient) {
+    this.trackingSheetClientProcessing = client;
+    this.trackingSheetClientProcessing.emailingClient = true;
+
+    this.trackingSheetService.postEmailClient(client);
   }
 
   onGetPage(page: number) {

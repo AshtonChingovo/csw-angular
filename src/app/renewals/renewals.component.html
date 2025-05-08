@@ -65,26 +65,27 @@
 
                 <!-- Refresh Button -->
                 <button type="button" (click)="processTrackingSheet()"
-                class="h-8 px-3 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100 active:bg-gray-200 transition flex items-center gap-x-1">
-            
-                <!-- Upload icon or spinner -->
-                <ng-container *ngIf="!isProcessingTrackingSheet; else refreshTrackingSheet">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                        <path d="M3 3v5h5" />
-                        <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-                        <path d="M16 16h5v5" />
-                    </svg>
-                </ng-container>
-            
-                <ng-template #refreshTrackingSheet>
-                    <span class="inline-block w-4 h-4 border-2 border-gray-500 border-t-transparent rounded-full animate-spin"></span>
-                </ng-template>
-            
-                <span>Refresh T.S.</span>
-            </button>
-            
+                    class="h-8 px-3 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100 active:bg-gray-200 transition flex items-center gap-x-1">
+
+                    <!-- Upload icon or spinner -->
+                    <ng-container *ngIf="!isProcessingTrackingSheet; else refreshTrackingSheet">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                            <path d="M3 3v5h5" />
+                            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                            <path d="M16 16h5v5" />
+                        </svg>
+                    </ng-container>
+
+                    <ng-template #refreshTrackingSheet>
+                        <span
+                            class="inline-block w-4 h-4 border-2 border-gray-500 border-t-transparent rounded-full animate-spin"></span>
+                    </ng-template>
+
+                    <span>Refresh T.S.</span>
+                </button>
+
 
             </div>
         </div>
@@ -142,6 +143,8 @@
                         *ngIf="item.membershipStatus === RENEWAL_DUE">Due Renewal</span>
                 </td>
                 <td class="px-4 py-4 text-sm text-gray-600">
+
+                    <!-- Due Renewal -->
                     <button *ngIf="item.membershipStatus === RENEWAL_DUE" (click)="onRenewClient(item)"
                         class="flex items-center px-3 py-1 bg-green-500 text-white rounded-full shadow-sm hover:bg-green-600 transition text-xs">
 
@@ -165,9 +168,35 @@
                         </ng-template>
 
                     </button>
+
+                    <!-- Send Email -->
+                    <button *ngIf="item.membershipStatus === ACTIVE_MEMBERSHIP && item.headshotRequestEmailSent === false"
+                        (click)="onEmailClient(item)"
+                        class="flex items-center px-3 py-1 bg-orange-500 text-white rounded-full shadow-sm hover:bg-orange-600 transition text-xs">
+
+                        <!-- Upload icon or spinner -->
+                        <ng-container *ngIf="!item.emailingClient; else emailClient">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail">
+                                <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+                                <rect x="2" y="4" width="20" height="16" rx="2" />
+                            </svg>
+                            <span class="ms-2">Send Email</span>
+                        </ng-container>
+
+                        <ng-template #emailClient>
+                            <span
+                                class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin me-1"></span>
+                            <span>Sending Email</span>
+                        </ng-template>
+
+                    </button>
+
+                    <!-- Client renewed -->
                     <span
                         class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-green-600/20 ring-inset"
-                        *ngIf="item.membershipStatus === ACTIVE_MEMBERSHIP">RENEWED</span>
+                        *ngIf="item.membershipStatus === ACTIVE_MEMBERSHIP && item.headshotRequestEmailSent">RENEWED</span>
                 </td>
             </tr>
         </tbody>
